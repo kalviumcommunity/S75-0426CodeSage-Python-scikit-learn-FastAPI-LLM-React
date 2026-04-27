@@ -1,8 +1,10 @@
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 
+from .config import RANDOM_STATE, TEST_SIZE
 
-def load_data(test_size=0.2, random_state=42):
+
+def load_data(test_size=TEST_SIZE, random_state=RANDOM_STATE):
     iris = load_iris()
     X = iris.data
     y = iris.target
