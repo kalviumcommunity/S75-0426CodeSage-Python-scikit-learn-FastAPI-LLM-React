@@ -49,12 +49,10 @@ The system helps developers debug faster and understand errors more effectively.
 
 ---
 
-## Environment Setup
-
-To ensure full reproducibility and to avoid interference with your global Python environment, this project uses an isolated virtual environment. 
+## Project Setup Instructions
 
 ### Prerequisites
-- **Python Version**: 3.13.x (or compatible 3.x)
+- **Python Version**: 3.13.x
 
 ### 1. Create the Virtual Environment
 From the project root directory, run:
@@ -63,35 +61,31 @@ python -m venv venv
 ```
 
 ### 2. Activate the Environment
-- **Windows (Command Prompt):**
-  ```cmd
-  venv\Scripts\activate.bat
-  ```
 - **Windows (PowerShell):**
   ```powershell
   .\venv\Scripts\Activate.ps1
   ```
-  *(Note: If you get an Execution Policy error on Windows, you may need to run `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` first.)*
 - **macOS/Linux:**
   ```bash
   source venv/bin/activate
   ```
 
 ### 3. Install Dependencies
-Once the environment is activated, install the required packages (this will use the pinned versions in `requirements.txt`):
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Verify Environment Isolation
-You can verify that your environment is isolated by running:
-```bash
-pip list
-```
-It should only list the packages specified in `requirements.txt`. When you are done working, you can exit the virtual environment by running:
-```bash
-deactivate
-```
+### 4. Run the Project
+- **Training and Evaluation:**
+  Run the main workflow to train the model and evaluate its performance:
+  ```bash
+  python -m src.main
+  ```
+- **Prediction:**
+  Run a sample prediction using the trained model:
+  ```bash
+  python -m src.predict
+  ```
 
 ---
 

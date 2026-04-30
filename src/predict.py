@@ -28,3 +28,18 @@ def predict_with_confidence(X, feature_engineer=None, model=None):
     probabilities = model.predict_proba(X_transformed)
     confidence = np.max(probabilities, axis=1)
     return predictions, confidence
+
+
+if __name__ == "__main__":
+    # Sample prediction for demonstration
+    sample_data = np.array([
+        [5.1, 3.5, 1.4, 0.2],  # Setosa
+        [6.7, 3.0, 5.2, 2.3]   # Virginica
+    ])
+    
+    print("=== Running Sample Prediction ===")
+    preds, confs = predict_with_confidence(sample_data)
+    
+    classes = ['Setosa', 'Versicolor', 'Virginica']
+    for i, (p, c) in enumerate(zip(preds, confs)):
+        print(f"Sample {i+1}: Predicted={classes[p]} (Confidence={c:.4f})")
