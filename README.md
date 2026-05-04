@@ -49,6 +49,20 @@ The system helps developers debug faster and understand errors more effectively.
 
 ---
 
+## Repository Structure Explanation
+
+The repository is organized into distinct directories to maintain a clean separation of concerns and ensure scalability. The `data/` directory is partitioned into `raw/` and `processed/` folders to preserve the integrity of the original datasets while tracking the transformations applied during the pipeline. The `src/` folder contains the core logic of the application, modularized into specific scripts for preprocessing, feature engineering, training, and evaluation. Machine learning models and transformation artifacts are stored in the `models/` directory, while `logs/` and `reports/` provide a centralized location for tracking system behavior and performance metrics respectively. Additionally, the `notebooks/` directory is reserved for exploratory data analysis and prototyping, keeping the production-ready code in `src/` free from experimental clutter.
+
+## Data Flow Mapping
+
+The system follows a linear and reproducible data pipeline. Data begins as raw files in `data/raw/`, which are then loaded and cleaned by the `data_preprocessing` module. Once the data is cleaned, it is passed to the `feature_engineering` module, where it undergoes transformation into model-ready inputs. These transformed features are used by the `train` module to fit the machine learning model. After training, the `evaluate` module assesses the model's performance on a held-out test set, and detailed results are saved to the `reports/` directory. Finally, the trained model and feature engineering artifacts are saved to the `models/` directory, where they can be loaded by the `predict` module to generate inferences on new, unseen data.
+
+## Design Justification
+
+The separation of raw and processed data is a fundamental best practice in data engineering, ensuring that the original data source remains immutable and reproducible. By keeping notebooks separate from the source code, we prevent experimental scripts from interfering with the production pipeline, ensuring that `src/` contains only tested and versioned logic. Storing models outside of the source directory allows for easier versioning of large binary artifacts and prevents the codebase from becoming bloated. The independence of logs and reports ensures that diagnostic information and performance metrics are easily accessible without cluttering the execution environment. Centralizing all path management within `config.py` eliminates hardcoded paths, making the project portable across different environments and operating systems while simplifying maintenance.
+
+---
+
 ## Project Setup Instructions
 
 ### Prerequisites
