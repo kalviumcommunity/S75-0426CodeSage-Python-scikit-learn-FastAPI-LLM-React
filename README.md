@@ -51,15 +51,35 @@ The system helps developers debug faster and understand errors more effectively.
 
 ## Repository Structure Explanation
 
-The repository is organized into distinct directories to maintain a clean separation of concerns and ensure scalability. The `data/` directory is partitioned into `raw/` and `processed/` folders to preserve the integrity of the original datasets while tracking the transformations applied during the pipeline. The `src/` folder contains the core logic of the application, modularized into specific scripts for preprocessing, feature engineering, training, and evaluation. Machine learning models and transformation artifacts are stored in the `models/` directory, while `logs/` and `reports/` provide a centralized location for tracking system behavior and performance metrics respectively. Additionally, the `notebooks/` directory is reserved for exploratory data analysis and prototyping, keeping the production-ready code in `src/` free from experimental clutter.
+The repository follows a strict separation of concerns to ensure maintainability and reproducibility:
+
+- **`data/`**: Divided into `raw/` (immutable source data) and `processed/` (data generated during the pipeline).
+- **`models/`**: Stores serialized model and preprocessing artifacts (e.g., `.pkl` files).
+- **`reports/`**: Contains evaluation metrics and performance reports.
+- **`src/`**: The core source code, modularized by responsibility:
+  - `data_loader.py`: Handles file I/O and basic data validation.
+  - `train.py`: Orchestrates the training pipeline, including splitting, fitting, and artifact saving.
+  - `predict.py`: Standalone inference script for generating predictions on new data.
+  - `config.py`: Centralized path management and hyperparameter configuration.
+- **`notebooks/`**: Reserved for exploratory data analysis (EDA) and prototyping.
 
 ## Data Flow Mapping
 
-The system follows a linear and reproducible data pipeline. Data begins as raw files in `data/raw/`, which are then loaded and cleaned by the `data_preprocessing` module. Once the data is cleaned, it is passed to the `feature_engineering` module, where it undergoes transformation into model-ready inputs. These transformed features are used by the `train` module to fit the machine learning model. After training, the `evaluate` module assesses the model's performance on a held-out test set, and detailed results are saved to the `reports/` directory. Finally, the trained model and feature engineering artifacts are saved to the `models/` directory, where they can be loaded by the `predict` module to generate inferences on new, unseen data.
+1. **Ingestion**: Raw data is loaded from `data/raw/` via the `data_loader` module.
+2. **Training Pipeline**:
+   - Data is split into training and testing sets.
+   - The `FeatureEngineer` is fitted **only** on the training set.
+   - The model is trained on the transformed training data.
+   - Performance is evaluated on the held-out test set.
+   - Artifacts (model, preprocessor) and reports are saved to `models/` and `reports/`.
+3. **Inference**:
+   - The `predict` module loads the saved artifacts.
+   - New input data is validated and transformed using the saved preprocessor (no re-fitting).
+   - The model generates predictions and confidence scores.
 
 ## Design Justification
 
-The separation of raw and processed data is a fundamental best practice in data engineering, ensuring that the original data source remains immutable and reproducible. By keeping notebooks separate from the source code, we prevent experimental scripts from interfering with the production pipeline, ensuring that `src/` contains only tested and versioned logic. Storing models outside of the source directory allows for easier versioning of large binary artifacts and prevents the codebase from becoming bloated. The independence of logs and reports ensures that diagnostic information and performance metrics are easily accessible without cluttering the execution environment. Centralizing all path management within `config.py` eliminates hardcoded paths, making the project portable across different environments and operating systems while simplifying maintenance.
+The separation of **raw and processed data** ensures that original datasets are never modified, maintaining a "single source of truth." By isolating **notebooks** from the `src/` directory, we prevent experimental code from being accidentally included in the production pipeline. **Model artifacts** are saved externally to keep the source code lightweight and facilitate versioning of binary files. The **independence of logs and reports** allows for performance tracking without cluttering the operational environment. Finally, the **centralized configuration** in `config.py` ensures that all modules use consistent paths and parameters, making the project portable and easy to maintain.
 
 ---
 
@@ -69,7 +89,6 @@ The separation of raw and processed data is a fundamental best practice in data 
 - **Python Version**: 3.13.x
 
 ### 1. Create the Virtual Environment
-From the project root directory, run:
 ```bash
 python -m venv venv
 ```
@@ -91,14 +110,12 @@ pip install -r requirements.txt
 
 ### 4. Run the Project
 - **Training and Evaluation:**
-  Run the main workflow to train the model and evaluate its performance:
   ```bash
-  python -m src.main
+  python -m src.train
   ```
-- **Prediction:**
-  Run a sample prediction using the trained model:
+- **Prediction (Inference):**
   ```bash
-  python -m src.predict
+  python -m src.predict --input data/sample_input.csv
   ```
 
 ---
