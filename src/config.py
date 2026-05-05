@@ -31,4 +31,5 @@ NOTEBOOKS_DIR = BASE_DIR / "notebooks"
 # File Paths
 SCALER_PATH = MODELS_DIR / "scaler.pkl"
 MODEL_PATH = MODELS_DIR / "model.pkl"
-TRAIN_DATA_PATH = RAW_DATA_DIR / "iris.csv"  # Placeholder for raw data
+TRAIN_DATA_PATH = RAW_DATA_DIR / "iris.csv"
+REPORT_PATH = REPORTS_DIR / "evaluation_report.txt"
